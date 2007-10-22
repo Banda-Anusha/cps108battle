@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * It has methods for the Model and main class to push events to the view, including message-passing,
  * game-related events, and lists of ships needed for placement.  This interface is well-suited to 
  * implementation in an ncurses- or GUI-based environment.
- * @author Matt Johnson
+ * @author Matt Johnson, Al Waldron
  *
  */
 public interface IBattleshipView {
@@ -66,4 +66,17 @@ public interface IBattleshipView {
 	public ArrayList<Coordinate> needPlacement(ShipShape shape);
 	
 	public void setModel(IBattleshipModel ibm);
+	/**
+	 * @author Al Waldron
+	 * This method shows a hit on both players' boards
+	 * @param mySS The shape of the ship that has been hit
+	 */
+	public void showHit(ShipShape mySS, BattleshipPlacement ship, Coordinate coord);
+	/**
+	 * @author Al Waldron
+	 * This method shows a miss on both players' boards
+	 * @param coord This is the coordinate of the errant shot
+	 * @param player This is the player that is processing the miss
+	 */
+	public void showMiss(Coordinate coord, IBattleshipPlayer player);
 }

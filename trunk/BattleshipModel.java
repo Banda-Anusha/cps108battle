@@ -77,6 +77,7 @@ public class BattleshipModel implements IBattleshipModel{
 			else if(pastStateOfCell == CellState.NOSHIP)
 			{
 				currentOffense.myPlayer.processMove(nextMove, CellState.MISS, null);
+				currentDefense.myState.processMiss(nextMove.getCoordinate());
 				//currentDefense.myPlayer.processMove(nextMove, CellState.MISS, null);
 			}
 			//...
@@ -166,5 +167,20 @@ public class BattleshipModel implements IBattleshipModel{
 	{
 		myLoser = loser;
 	}
+
+	@Override
+	public void shipHit(ShipShape mySS, BattleshipPlacement myBP, Coordinate coord) {
+		for(PlayerData pd : myPlayers){
+			pd.myView.showHit(mySS, myBP, coord);
+		}
+	}
+
+	@Override
+	public void miss(Coordinate coordinate, IBattleshipPlayer player) {
+		for(PlayerData pd : myPlayers){
+			pd.myView.showMiss(coordinate, player);
+		}
+	}
+	
 	
 }
