@@ -86,10 +86,12 @@ public class BattlePanel extends JPanel {
     	if(myView.expectingInput(this))
     	{
     		myView.addCoordinate(new Coordinate((bb.getRow()-1),(bb.getCol()-1)), null);
-    		showRedSquare((bb.getRow()-1), (bb.getCol()-1));
+    		//showShip((bb.getRow()-1), (bb.getCol()-1));
     	}
     }
-    
+    public Coordinate getDim(){
+    	return (new Coordinate(myRows, myCols));
+    }
     private void makeButtons(){
         myButtons = new JButton[myRows][myCols];
         BattleButtonListener bbl = new BattleButtonListener(this);

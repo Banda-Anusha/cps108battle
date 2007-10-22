@@ -10,13 +10,6 @@
 
 public interface IBattleshipModel {
 	/**
-	 * This method should be called when a "series" is to be started.  
-	 * This should be called when the Battleship "program" is first invoked,
-	 * as well as any time we want to bring in new players,
-	 * or when we want to reset the score.
-	 */
-	public void reset();
-	/**
 	 * This method should be called whenever we want to add a player to the game.
 	 * @param p The player to be added.
 	 * @param v The view with which this player is to be associated (null if none).
@@ -63,4 +56,19 @@ public interface IBattleshipModel {
 	
 	public void shipSunk(ShipShape ss, BattleshipPlacement sp);
 	public void gameIsOver(IBattleshipPlayer winner);
+	/**
+	 * @author Al Waldron
+	 * This method is used to process when a ship is hit.
+	 * @param mySS This is the shape of the ship that has been hit
+	 * @param myBP This is the placement of the ship on the board
+	 * @param coord This is the coordinate of the hit
+	 */
+	public void shipHit(ShipShape mySS, BattleshipPlacement myBP, Coordinate coord);
+	/**
+	 * This method is used to process a miss
+	 * @author Al Waldron
+	 * @param coordinate This is the coordinate of the missed ship
+	 * @param battleshipPlayer This is the player that missed
+	 */
+	public void miss(Coordinate coordinate, IBattleshipPlayer battleshipPlayer);
 }

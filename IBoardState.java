@@ -26,7 +26,7 @@ public interface IBoardState {
 	 * @param whichShip If the new state is a HIT or SUNK, this parameter will be the ship HIT or SUNK.  Otherwise, it will be null.
 	 * @return Whether or not the coordinate given was valid, and thus, whether or not the state change was successful.
 	 */
-	public boolean setState(Coordinate c, CellState newState, ShipShape whichShip);
+	public boolean setState(Coordinate c, CellState newState);
 	
 	/**
 	 * This method is used to figure out which coordinates are, as yet, untried.
@@ -42,4 +42,15 @@ public interface IBoardState {
 	public void setModel(IBattleshipModel model);
 	public void addShip(BattleshipPlacement bp, ShipShape ss);
 	public void processHit(Coordinate c);
+	/**
+	 * This method processes a missed shot
+	 * @author Al Waldron
+	 * @param coordinate This is the coordinate of the missed shot
+	 */
+	public void processMiss(Coordinate coordinate);
+	/*
+	 * This method determines if the game is over
+	 * @return Retruns true if the game is over (there are no ships on the board) and false otherwise
+	 */
+	public boolean gameOver();
 }

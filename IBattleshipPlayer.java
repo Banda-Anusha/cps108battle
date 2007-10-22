@@ -56,4 +56,5 @@ public interface IBattleshipPlayer {
 	public boolean addShipPlacement(BattleshipPlacement place, ShipShape shape);
 	
 	public void setModel(IBattleshipModel ibm);
+	public void setName(String name);
 }
