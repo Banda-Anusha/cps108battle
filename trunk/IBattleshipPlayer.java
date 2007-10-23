@@ -57,4 +57,6 @@ public interface IBattleshipPlayer {
 	
 	public void setModel(IBattleshipModel ibm);
 	public void setName(String name);
+
+	public void setView(IBattleshipView yourBattleView);
 }

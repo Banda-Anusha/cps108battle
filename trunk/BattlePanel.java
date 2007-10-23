@@ -37,29 +37,30 @@ public class BattlePanel extends JPanel {
     	myView = view; 
     }
     
-    public void showMiss(int row, int col){
+    public void showMiss(int col, int row){
         myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(MISS));
     }
-    public void showSunk(int row, int col){
+    public void showSunk(int col, int row){
         myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(SUNK));
     }
-    public void showShip(int row, int col){
+    public void showShip(int col, int row){
     	myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(SHIP));
     }
-    public void showHit(int row, int col){
+    public void showHit(int col, int row){
     	myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(HIT));
     }
-    public void showWater(int row, int col)
+    public void showWater(int col, int row)
     {
     	myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(WATER));
     }
-    public void showRedSquare(int row, int col)
+    public void showRedSquare(int col, int row)
     {
     	myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(REDSQUARE));
     }   
-    public void clear(int row, int col)
+    public void clear(int col, int row)
     {
-    	myButtons[row+1][col+1].setIcon(null);
+    	if(((row+1) < myRows) && ((col+1) < myCols))
+    		myButtons[row+1][col+1].setIcon(null);
     }
     public void clearAll()
     {
@@ -85,7 +86,7 @@ public class BattlePanel extends JPanel {
     	listening = false;
     	if(myView.expectingInput(this))
     	{
-    		myView.addCoordinate(new Coordinate((bb.getRow()-1),(bb.getCol()-1)), null);
+    		myView.addCoordinate(new Coordinate((bb.getCol()-1),(bb.getRow()-1)), null);
     		//showShip((bb.getRow()-1), (bb.getCol()-1));
     	}
     }

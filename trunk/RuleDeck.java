@@ -47,9 +47,11 @@ public class RuleDeck implements IRuleDeck{
 	}
 
 	public boolean isMoveValid(IBoardState bs, BattleshipMove m) {
-		if(!((m.getCoordinate().myX < Width) && (m.getCoordinate().myY < Height)))
+		CellState cs = bs.getState(m.getCoordinate());
+		System.err.println("isMoveValid State: "+cs+" @ ("+m.getCoordinate().myX+","+m.getCoordinate().myY+")");
+		if(cs == CellState.INVALID)
 			return false;
-		if((bs.getState(m.getCoordinate()) == CellState.MISS) || (bs.getState(m.getCoordinate()) == CellState.HIT) || (bs.getState(m.getCoordinate()) == CellState.SUNK))
+		if((cs == CellState.MISS) || (cs == CellState.HIT) || (cs == CellState.SUNK))
 			return false;
 		return true;
 	}

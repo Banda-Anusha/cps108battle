@@ -22,4 +22,9 @@ public class BattleshipMove {
 	{
 		return myCoordinate;
 	}
+
+	public boolean equals(Object obj) {
+		BattleshipMove bm = (BattleshipMove) obj;
+		return (bm.myPlayer == myPlayer) && (bm.myCoordinate.myX == myCoordinate.myX) && (bm.myCoordinate.myY == myCoordinate.myY);
+	}	
 }

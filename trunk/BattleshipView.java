@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class BattleshipView extends JFrame implements IBattleshipView{
 	
-	private static final String POPUPTitle = "HEY!";
+	private static final String POPUPTitle = "Battleship Message";
 	
 	private JTextArea myDisplay;
 	private BattlePanel myShipPanel;
@@ -27,10 +27,10 @@ public class BattleshipView extends JFrame implements IBattleshipView{
     	myShipPanel.setView(this);
     	myShotPanel = shotPanel;
     	myShotPanel.setView(this);
-        setTitle(p.getName());
+        setTitle((p != null) ? p.getName() : "Computer");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         JPanel content = (JPanel) getContentPane();
-        myDisplay = new JTextArea(1,40);
+        myDisplay = new JTextArea(5,40);
         
          makeMenu();
          
@@ -39,12 +39,13 @@ public class BattleshipView extends JFrame implements IBattleshipView{
         content.add(myDisplay, BorderLayout.CENTER);
         content.add(shipPanel, BorderLayout.SOUTH);
         pack();
-        //setVisible(true); 
         
         myCoords = Collections.synchronizedList(new ArrayList<Coordinate>());
         myNumCoordsNeeded = 0;
         expectingShipPresses = false;
         expectingShotPresses = false;
+        
+        setVisible(true);
     }
     protected void makeMenu() {
         JMenuBar bar = new JMenuBar();
@@ -54,9 +55,15 @@ public class BattleshipView extends JFrame implements IBattleshipView{
     }
     protected JMenu makeFileMenu(){
         JMenu fileMenu = new JMenu("File");
+        	JMenuItem jmi = new JMenuItem("New Game"){
+        		public void actionPerformed(ActionEvent ev){
+            		myModel.newGame();
+            	}
+        	};
+        	
+            fileMenu.add(jmi);
             
-            
-            fileMenu.add(new AbstractAction("New Player"){
+            fileMenu.add(new AbstractAction("Change Name"){
                 public void actionPerformed(ActionEvent ev){
                    myPlayer.setName(JOptionPane.showInputDialog("Please enter your name"));
                    setTitle(myPlayer.getName());
@@ -73,7 +80,7 @@ public class BattleshipView extends JFrame implements IBattleshipView{
     	JMenu aboutMenu = new JMenu("About");
     	aboutMenu.add(new AbstractAction("About"){
     		public void actionPerformed(ActionEvent ev){
-    			JOptionPane.showMessageDialog(null, "BATTLESHIP\nMatt Johnson\nAl Waldron\nAlex Hunter\nPat Ebil");
+    			JOptionPane.showMessageDialog(null, "BATTLESHIP\nMatt Johnson\nAl Waldron\nAlex Hunter\nPat Eibl");
     		}
     	});
     	return aboutMenu;
@@ -83,7 +90,8 @@ public class BattleshipView extends JFrame implements IBattleshipView{
     {
     	myModel = ibm;
     }
-    
+
+	
 	public void addBattleship(BattleshipPlacement loc) {
 		for (int idx = 0; idx <  loc.getPoints().size(); idx++){
 			myShipPanel.showShip(loc.getPoints().get(idx).myX, loc.getPoints().get(idx).myY);
@@ -109,26 +117,38 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 		return (myCoords.size() < myNumCoordsNeeded);
 	}
 	
-	public void setTurn(IBattleshipPlayer itsYourTurn) {
-		myCoords.clear();
-		if(itsYourTurn == myPlayer)
+	public void needMove()
+	{
+		expectingShotPresses = true;
+		boolean done = false;
+		while(!done)
 		{
-			myNumCoordsNeeded = 1;
-			expectingShotPresses = true;
-			showMessage("Your Turn", MessageType.INFO);
 			while(myCoords.isEmpty())
 			{
 				try {
-					Thread.sleep(10);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(0);
 				}
 			}
-			expectingShotPresses = false;
 			System.err.println("Got coord");
-			myPlayer.addMove(new BattleshipMove(myPlayer, myCoords.get(0)));
+			for(Coordinate c : myCoords)
+				if(myPlayer.addMove(new BattleshipMove(myPlayer, c)))
+				{
+					done = true;
+					break;
+				}
 			myCoords.clear();
+		}
+		expectingShotPresses = false;
+	}
+	
+	public void setTurn(IBattleshipPlayer itsYourTurn) {
+		if(itsYourTurn == myPlayer)
+		{
+			myNumCoordsNeeded = 1;
+			expectingShotPresses = true;
 		}
 		else
 		{
@@ -149,8 +169,8 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 		ArrayList<Coordinate> points = new ArrayList<Coordinate>();
 		do
 		{
-			//for(Coordinate c : points)
-				//myShipPanel.clear(c.myX, c.myY);
+			for(Coordinate c : points)
+				myShipPanel.clear(c.myX, c.myY);
 			points.clear();
 			if(triedAndFailed)
 				showMessage("Error In Placing "+shape.getName()+"!  Try Again", MessageType.POPUP);
@@ -163,6 +183,8 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 					e.printStackTrace();
 					System.exit(0);
 				}
+				//should check if ship is already there
+				//if ((myCoords.size() == 1) && (myCoords.get(0))
 				if (myCoords.size() == 1) myShipPanel.showRedSquare(myCoords.get(0).myX, myCoords.get(0).myY);
 			}
 			points.addAll(myCoords);
@@ -229,18 +251,16 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 	}
 
 	public void newGame() {
-        setVisible(true);
-		
 	}
 
 	public void reset(BoardDimensions bd) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	public void showShot(BattleshipPlacement ship){
 		
 	}
+	
 	public void shipSunk(BattleshipPlacement ship, ShipShape shape) {
 		BattlePanel bp;
 		String whose = null;
@@ -252,12 +272,15 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 		else
 		{
 			bp = myShotPanel;
-			whose = "Their";
+			whose = ship.getPlayer().getName()+"'s";
+		}
+		showMessage((whose+" "+shape.getName()+" Was Sunk!"), MessageType.INFO);
+		for(Coordinate c : ship.getPoints()){
+			bp.setState(c, CellState.SUNK);
 		}
 		for(Coordinate c : ship.getPoints()){
 			bp.setState(c, CellState.SUNK);
 		}
-		showMessage((whose+" "+shape.getName()+" Was Sunk!"), MessageType.POPUP);
 	}
 
 	public void showMessage(String msg, MessageType type) {
@@ -281,7 +304,7 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 		
 	}
 
-	@Override
+	//@Override
 	public void showHit(ShipShape mySS, BattleshipPlacement ship, Coordinate coord) {
 		BattlePanel bp;
 		if(ship.getPlayer() == myPlayer)
@@ -293,19 +316,22 @@ public class BattleshipView extends JFrame implements IBattleshipView{
 			bp = myShotPanel;
 		}
 		bp.setState(coord, CellState.HIT);
-		showMessage((ship.getPlayer().getName()+" "+mySS.getName()+" Was HIT!"), MessageType.POPUP);
+		showMessage((ship.getPlayer().getName()+"'s "+mySS.getName()+" was HIT!"), MessageType.INFO);
 	}
 	public void showMiss(Coordinate coord, IBattleshipPlayer player){
 		BattlePanel bp;
+		String who;
 		if(player == myPlayer) 
 		{
 			bp = myShipPanel;
+			who = "Opponent";
 		}
 		else
 		{
 			bp = myShotPanel;
+			who = "You";
 		}
 		bp.setState(coord, CellState.MISS);
-		showMessage((player.getName()+" MISSED"), MessageType.POPUP);
+		showMessage((who + " Missed!"), MessageType.INFO);
 	}
 }

@@ -43,7 +43,8 @@ public class BattleshipModel implements IBattleshipModel{
 		for(PlayerData pd : myPlayers)
 		{
 			pd.myPlayer.newGame();
-			pd.myView.newGame();
+			if(pd.myView != null)
+				pd.myView.newGame();
 			pd.myState.newGame(myRuleDeck.getBoardDimensions());
 		}
 		
@@ -62,25 +63,27 @@ public class BattleshipModel implements IBattleshipModel{
 			{
 				currentDefense.myView.setTurn(currentOffense.myPlayer);
 			}
-			BattleshipMove nextMove = currentOffense.myPlayer.getMove();
 			
+			BattleshipMove nextMove = currentOffense.myPlayer.getMove();
 			System.err.println("Got ("+nextMove.getCoordinate().myX+","+nextMove.getCoordinate().myY+") from "+nextMove.getPlayer().getName());
 			
 			CellState pastStateOfCell = currentDefense.myState.getState(nextMove.getCoordinate());
+			
+			System.err.println("Past State: "+pastStateOfCell);
+			
 			if(pastStateOfCell == CellState.SHIP) //There was a ship there, this is a hit.
 			{
 				currentOffense.myPlayer.processMove(nextMove, CellState.HIT, null); 
 				currentDefense.myState.processHit(nextMove.getCoordinate());
 				//TODO: roll in ShipShape info
-				//currentDefense.myPlayer.processMove(nextMove, CellState.HIT, null);
+				currentDefense.myPlayer.processMove(nextMove, CellState.HIT, null);
 			}
 			else if(pastStateOfCell == CellState.NOSHIP)
 			{
 				currentOffense.myPlayer.processMove(nextMove, CellState.MISS, null);
 				currentDefense.myState.processMiss(nextMove.getCoordinate());
-				//currentDefense.myPlayer.processMove(nextMove, CellState.MISS, null);
+				currentDefense.myPlayer.processMove(nextMove, CellState.MISS, null);
 			}
-			//...
 				
 			//Switch turns
 			PlayerData temp = currentOffense;
@@ -96,9 +99,12 @@ public class BattleshipModel implements IBattleshipModel{
 			}
 		for(PlayerData pd : myPlayers)
 		{
-			pd.myView.gameOver(winner);
-			for(PlayerData pd2 : myPlayers)
-				pd.myView.updateScore(pd2.myPlayer, pd2.myScore);
+			if(pd.myView != null)
+			{
+				pd.myView.gameOver(winner);
+				for(PlayerData pd2 : myPlayers)
+					pd.myView.updateScore(pd2.myPlayer, pd2.myScore);
+			}
 			pd.myPlayer.newGame();
 		}	
 	}
@@ -111,7 +117,8 @@ public class BattleshipModel implements IBattleshipModel{
 					pd.myView.addBattleship(bp);
 				pd.myState.addShip(bp, ship);
 			}
-			pd.myView.showMessage("Done Placing Ships", MessageType.INFO);
+			if(pd.myView != null)
+				pd.myView.showMessage("Done Placing Ships", MessageType.INFO);
 		}
 		System.err.println("done placing.");
 	}
@@ -123,7 +130,8 @@ public class BattleshipModel implements IBattleshipModel{
 			pd.myPlayer = p;
 			pd.myPlayer.setModel(this);
 			pd.myView = v;
-			pd.myView.setModel(this);
+			if(pd.myView != null)
+				pd.myView.setModel(this);
 			pd.myState = new BoardState();
 			pd.myState.setModel(this);
 			pd.myScore = 0;
@@ -142,7 +150,8 @@ public class BattleshipModel implements IBattleshipModel{
 		for(PlayerData pd : myPlayers)
 		{
 			pd.myState.newGame(myRuleDeck.getBoardDimensions());
-			pd.myView.reset(myRuleDeck.getBoardDimensions());
+			if(pd.myView != null)
+				pd.myView.reset(myRuleDeck.getBoardDimensions());
 			pd.myScore = 0;
 		}
 	}
@@ -155,11 +164,14 @@ public class BattleshipModel implements IBattleshipModel{
 		myPlayers = new ArrayList<PlayerData>();
 	}
 
-	@Override
 	public void shipSunk(ShipShape ss, BattleshipPlacement sp) {
 		for(PlayerData pd : myPlayers)
 		{
-				pd.myView.shipSunk(sp, ss);
+				//for (int idx = 0; idx < sp.getPoints().size(); idx++){
+				//	pd.myState.setState(sp.getPoints().get(idx), CellState.SUNK);
+				//}
+				if(pd.myView != null)
+					pd.myView.shipSunk(sp, ss);				
 		}
 	}
 	
@@ -168,19 +180,8 @@ public class BattleshipModel implements IBattleshipModel{
 		myLoser = loser;
 	}
 
-	@Override
-	public void shipHit(ShipShape mySS, BattleshipPlacement myBP, Coordinate coord) {
-		for(PlayerData pd : myPlayers){
-			pd.myView.showHit(mySS, myBP, coord);
-		}
+	public BoardDimensions getBoardSize() {
+		return myRuleDeck.getBoardDimensions();
 	}
-
-	@Override
-	public void miss(Coordinate coordinate, IBattleshipPlayer player) {
-		for(PlayerData pd : myPlayers){
-			pd.myView.showMiss(coordinate, player);
-		}
-	}
-	
 	
 }

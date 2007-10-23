@@ -6,24 +6,32 @@ public class BattleMain {
     	RuleDeck rules = new RuleDeck();
     	BoardDimensions boardSize = rules.getBoardDimensions();
     	
-    	BattleshipPlayer p1 = new BattleshipPlayer("Player 1");
-    	//p1.setName("Peter");
-    	BattleshipPlayer p2 = new BattleshipPlayer("Player 2");
-    	//p2.setName("Mary");
+    	IBattleshipPlayer p1, p2;
     	
-        BattlePanel yourShipPanel = new BattlePanel(boardSize);
-        BattlePanel yourShotPanel = new BattlePanel(boardSize);
-        BattleshipView yourBattleView = new BattleshipView(p1, yourShipPanel, yourShotPanel, "Your Battleship Board");
-        p1.setView(yourBattleView);
+    	
+    	if(args[0].equalsIgnoreCase("h"))
+    		p1 = new BattleshipPlayer("Player 1");
+    	else
+    		p1 = new BattleshipPlayerAI("Player 1");
+    	
+    	if(args[1].equalsIgnoreCase("h"))
+    		p2 = new BattleshipPlayer("Player 2");
+    	else
+    		p2 = new BattleshipPlayerAI("Player 2");
+    	
+        BattlePanel p1ShipPanel = new BattlePanel(boardSize);
+        BattlePanel p1ShotPanel = new BattlePanel(boardSize);
+        BattleshipView p1BattleView = new BattleshipView(p1, p1ShipPanel, p1ShotPanel, "Your Battleship Board");
+        p1.setView(p1BattleView);
         
-        BattlePanel theirShipPanel = new BattlePanel(boardSize);
-        BattlePanel theirShotPanel = new BattlePanel(boardSize);
-        BattleshipView theirBattleView = new BattleshipView(p2, theirShipPanel, theirShotPanel, "Their Battleship Board");
-        p2.setView(theirBattleView);
+        BattlePanel p2ShipPanel = new BattlePanel(boardSize);
+        BattlePanel p2ShotPanel = new BattlePanel(boardSize);
+        BattleshipView p2BattleView = new BattleshipView(p2, p2ShipPanel, p2ShotPanel, "Their Battleship Board");
+        p2.setView(p2BattleView);
         IBattleshipModel gameModel = new BattleshipModel();
                 
-        gameModel.registerPlayer(p1, yourBattleView);
-        gameModel.registerPlayer(p2, theirBattleView);
+        gameModel.registerPlayer(p1, p1BattleView);
+        gameModel.registerPlayer(p2, p2BattleView);
         gameModel.setRules(rules);
         
         gameModel.newGame();

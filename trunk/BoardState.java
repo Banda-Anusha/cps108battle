@@ -29,6 +29,7 @@ public class BoardState implements IBoardState{
 	}
 	
 	public CellState getState(Coordinate c) {
+		System.err.println(myBoardDims.getWidth()+"x"+myBoardDims.getHeight());
 		if(!isCoordinateValid(c))
 			return CellState.INVALID;
 		return myBoard[c.myX][c.myY];
@@ -68,12 +69,12 @@ public class BoardState implements IBoardState{
 	
 	//@Override
 	public boolean setState(Coordinate c, CellState newState) {
-		System.err.println("Setting State");
+		System.err.println("Setting State: ("+c.myX+","+c.myY+") = "+newState);
 		myBoard[c.myX][c.myY] = newState;
 		return true;
 	}
 
-	@Override
+	//@Override
 	public void addShip(BattleshipPlacement bp, ShipShape ss) {
 		myShips.add(new ShipData(bp, ss));
 		for (Coordinate c : bp.getPoints())
@@ -85,7 +86,6 @@ public class BoardState implements IBoardState{
 		{
 			if(entry.myCoords.contains(c))
 			{
-				myModel.shipHit(entry.mySS, entry.myBP, c);
 				System.err.println("Found a match!  "+entry.mySS.getName());
 				System.err.println("Still has "+entry.myCoords.size()+" blocks left");
 				entry.myCoords.remove(c);
@@ -101,22 +101,21 @@ public class BoardState implements IBoardState{
 						myModel.gameIsOver(entry.myBP.getPlayer());
 				}
 				else
-					this.setState(c, CellState.MISS);
+					this.setState(c, CellState.HIT);
 				break;
 			}
 		}
 	}
-
-	@Override
-	public void processMiss(Coordinate coordinate) {
-		myModel.miss(coordinate, myShips.get(0).myBP.getPlayer());
-		
+	
+	public void processMiss(Coordinate c)
+	{
+		if(isCoordinateValid(c))
+			this.setState(c, CellState.MISS);
 	}
 
-	@Override
+	//@Override
 	public boolean gameOver() {
-		// TODO Auto-generated method stub
-		return false;
+		return myShips.isEmpty();
 	}
 
 }
