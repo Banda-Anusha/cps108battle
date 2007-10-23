@@ -52,15 +52,7 @@ public class BattleshipPlayer implements IBattleshipPlayer{
 	}
 
 	public BattleshipMove getMove() {
-		while(myMoves.isEmpty())
-		{
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-		}
+		myView.needMove();
 		return myMoves.remove(0);		
 	}
 

@@ -1,20 +1,20 @@
 CPS108 Fall 07
-Battleship Beta
+Battleship Beta 2
 ----------------
 Matt Johnson
 Alex Hunter
 Pat Eibl
 Al Waldron
 ----------------
-Due: 10/5/07
+Due: 10/22/07
 
 
 The main class for this beta is in BattleMain.java.
 
 The functionality implemented thus far is as follows:
 -----------------------------------------------------
-*Player vs. Player mode only (same machine)
-   * Interfaces and Architecture will make Player vs. Computer and networked modes easy
+*Any combination of 2 players (can be AI or Human)
+   * Interfaces and Architecture will make networked mode easy
 *Graphical User Interface (Swing)
 *Full game functionality
    *Placing ships from arbitrary rule deck, auto-validating ship placements
@@ -22,15 +22,22 @@ The functionality implemented thus far is as follows:
    *Ascertaining the result of each move, and updating both views accordingly
    *Full-featured message-passing framework (in-line text (info, warning, error, etc..) and popups)
    *Automatic determination of when the game ends, and who won.
+   *Full support for arbitrary-sized rectangular boards and arbitrary number, name, and shape (not just length) of ships
+   *2-Click ship placement for linear ships (origin and direction)
 *MVC Architecture, all interfaces implemented.
 
 Still to come
 -------------
-*PVC and PVP Networked mode
+*PVP Networked mode
    *Different Computer Strategies (Difficulty Levels)
-*Menu (for resetting score, new game, changing player names, etc..)
 *Novel gameplay modes (>2 Players, etc..)
 *Different icon sets
 *Save/Replay game?  (but who wants to watch Battleship?)
 *Rework message passing to allow scrollable message area (to pass multiple pieces of info at the same time)
 *Code Cleanup, Javadoc, ...
+
+
+How to run
+----------
+Give it 2 command-line arguments: the first one should be "h" for human, and "c" for computer, and likewise for the second argument.
+For example, "java BattleMain c h" will pit an AI Player 1 against a human Player 2.

@@ -42,15 +42,11 @@ public interface IBoardState {
 	public void setModel(IBattleshipModel model);
 	public void addShip(BattleshipPlacement bp, ShipShape ss);
 	public void processHit(Coordinate c);
+	public void processMiss(Coordinate c);
+	
 	/**
-	 * This method processes a missed shot
-	 * @author Al Waldron
-	 * @param coordinate This is the coordinate of the missed shot
-	 */
-	public void processMiss(Coordinate coordinate);
-	/*
 	 * This method determines if the game is over
-	 * @return Retruns true if the game is over (there are no ships on the board) and false otherwise
+	 * @return true if the game is over (there are no ships on the board) and false otherwise
 	 */
 	public boolean gameOver();
 }
