@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 /**
  * This Interface comprises the methods that must be implemented by any Rule Deck so that the Model
  * can obtain the appropriate information about the rules of the current game.
  * @author Matt Johnson
  *
  */
-public interface IRuleDeck {
+public interface IRuleDeck extends Serializable{
 	/**
 	 * This method is used for the Model to relay ship placements from the Players, and ask if they are valid or not, based on the rules of the game.
 	 * @param bs The current state of the board (what other ships have been placed)

@@ -1,10 +1,11 @@
-
+import java.io.Serializable;
+import java.util.ArrayList;
 /**
  * This Interface defines the methods a Player class must implement in order to pass information between itself, the Model, and the View.
  * @author Matt Johnson
  *
  */
-public interface IBattleshipPlayer {
+public interface IBattleshipPlayer extends Serializable {
 	/**
 	 * This method returns the name of this individual Player (not the implementation class name).
 	 * @return The Player's name.
@@ -59,4 +60,13 @@ public interface IBattleshipPlayer {
 	public void setName(String name);
 
 	public void setView(IBattleshipView yourBattleView);
+	public void forfeit();
+	public void gameIsOver(IBattleshipPlayer winner);
+	public void setTurn(IBattleshipPlayer whoseTurn);
+	public void updateScore(IBattleshipPlayer player, int newScore);
+	public void reset();
+	public boolean isMoveValid(Coordinate move);
+	public boolean isPlacementValid(ArrayList<Coordinate> al, ShipShape ss);
+	public void addShip(BattleshipPlacement bp);
+	public void shipSunk(BattleshipPlacement bp, ShipShape ss);
 }

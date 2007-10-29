@@ -3,9 +3,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
 import javax.swing.ImageIcon;
+import java.io.Serializable;
 
-
-public class IconFactoryFromDirectory {
+public class IconFactoryFromDirectory implements Serializable{
     
     private static final String DIRNAME = "images";
     private String myDirectory;
@@ -30,7 +30,7 @@ public class IconFactoryFromDirectory {
             
             ImageIcon icon = new ImageIcon(name);
             if (icon != null){
-                System.out.println("loaded "+f.getName());
+                //System.out.println("loaded "+f.getName());
             }
             myMap.put(f.getName(), new ResizableIcon(icon));
         }

@@ -29,7 +29,7 @@ public class BoardState implements IBoardState{
 	}
 	
 	public CellState getState(Coordinate c) {
-		System.err.println(myBoardDims.getWidth()+"x"+myBoardDims.getHeight());
+		//System.err.println(myBoardDims.getWidth()+"x"+myBoardDims.getHeight());
 		if(!isCoordinateValid(c))
 			return CellState.INVALID;
 		return myBoard[c.myX][c.myY];
@@ -69,7 +69,7 @@ public class BoardState implements IBoardState{
 	
 	//@Override
 	public boolean setState(Coordinate c, CellState newState) {
-		System.err.println("Setting State: ("+c.myX+","+c.myY+") = "+newState);
+		//System.err.println("Setting State: ("+c.myX+","+c.myY+") = "+newState);
 		myBoard[c.myX][c.myY] = newState;
 		return true;
 	}
@@ -86,13 +86,13 @@ public class BoardState implements IBoardState{
 		{
 			if(entry.myCoords.contains(c))
 			{
-				System.err.println("Found a match!  "+entry.mySS.getName());
-				System.err.println("Still has "+entry.myCoords.size()+" blocks left");
+				//System.err.println("Found a match!  "+entry.mySS.getName());
+				//System.err.println("Still has "+entry.myCoords.size()+" blocks left");
 				entry.myCoords.remove(c);
 				
 				if(entry.myCoords.isEmpty())
 				{	
-					System.err.println("SUNK IT! ("+entry.mySS.getName()+")");
+					//System.err.println("SUNK IT! ("+entry.mySS.getName()+")");
 					myModel.shipSunk(entry.mySS, entry.myBP);
 					myShips.remove(entry);
 					for(Coordinate coord : entry.myBP.getPoints())

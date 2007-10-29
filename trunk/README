@@ -1,5 +1,5 @@
 CPS108 Fall 07
-Battleship Beta 2
+Battleship Final Submission
 ----------------
 Matt Johnson
 Alex Hunter
@@ -9,12 +9,28 @@ Al Waldron
 Due: 10/22/07
 
 
-The main class for this beta is in BattleMain.java.
+This submission consists of 3 main classes:
+*A primitive 2-player (any combination of human players and computers) game in BattleMain.java.
+   *This takes 2 command-line arguments, each one is either c or h (for computer or human player, respectively).
+*A game server in BattleServer.java.
+   *This takes no command-line args, and can host multiple 2-player games.
+   *Players are automatically matched up as they join.
+   *All game state is stored server-side, increasing security.
+   *Score is maintained across games.
+*A game client in BattleClient.java.
+   *This has 4 modes:
+      *1 Player vs. Computer Ships -- Computer places ships, you guess them.  Score is # of shots to get all ships.
+      *1 Player vs. Computer Opponent -- Both you and the AI opponent place ships and play Battleship normally.  Score is # of games won thus far.
+      *2 Player (Local) -- Both views are displayed on the same computer (no peeking!)
+      *2 Player (Network) -- 2 instances of BattleClient.java are run, and connect to the server at a runtime
+                             user-specified IPv4 or IPv6 address and port.
+
+*For reference, the board where you place your ships, and where the results of your opponent's shots are shown is on the bottom.
+The board where the results of your shots are shown is on the top.
 
 The functionality implemented thus far is as follows:
 -----------------------------------------------------
 *Any combination of 2 players (can be AI or Human)
-   * Interfaces and Architecture will make networked mode easy
 *Graphical User Interface (Swing)
 *Full game functionality
    *Placing ships from arbitrary rule deck, auto-validating ship placements
@@ -24,20 +40,23 @@ The functionality implemented thus far is as follows:
    *Automatic determination of when the game ends, and who won.
    *Full support for arbitrary-sized rectangular boards and arbitrary number, name, and shape (not just length) of ships
    *2-Click ship placement for linear ships (origin and direction)
+   *Full-featured, extensible NetMessage framework for future enhancements.
 *MVC Architecture, all interfaces implemented.
 
 Still to come
 -------------
-*PVP Networked mode
-   *Different Computer Strategies (Difficulty Levels)
 *Novel gameplay modes (>2 Players, etc..)
 *Different icon sets
 *Save/Replay game?  (but who wants to watch Battleship?)
-*Rework message passing to allow scrollable message area (to pass multiple pieces of info at the same time)
 *Code Cleanup, Javadoc, ...
-
 
 How to run
 ----------
-Give it 2 command-line arguments: the first one should be "h" for human, and "c" for computer, and likewise for the second argument.
+
+* BattleMain.java -- Give it 2 command-line arguments: the first one should be "h" for human, and "c" for computer, and likewise for the second argument.
 For example, "java BattleMain c h" will pit an AI Player 1 against a human Player 2.
+
+* BattleServer.java -- 1 command-line argument: the port number to be used.  make sure this process is running before the client processes attempt to connect.
+* BattleMain.java -- doesn't need command-line args, but make sure BattleServer.java is running first.
+
+NOTE: For same-machine networked-mode testing, use localhost (i.e. 127.0.0.1:1057). Make sure the port number matches between both client instances and the server.

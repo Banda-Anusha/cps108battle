@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.border.*;
 import javax.swing.BorderFactory;
@@ -23,12 +24,15 @@ public class BattlePanel extends JPanel {
     private boolean listening;
     private BattleshipView myView;
     
+    private String myScoreString;
     
-    public BattlePanel(BoardDimensions dim){
+    
+    public BattlePanel(BoardDimensions dim, String scoreString){
         super(new GridLayout(dim.getHeight()+1,dim.getWidth()+1,0,0));
         myRows = dim.getHeight()+1;
         myCols = dim.getWidth()+1;
         myIconFactory =  new IconFactoryFromDirectory("images"); //"/Users/ola/Desktop/courses/108/workspace/GUIs/src/images");
+        myScoreString = scoreString;
         makeButtons();
     }
     
@@ -38,7 +42,7 @@ public class BattlePanel extends JPanel {
     }
     
     public void showMiss(int col, int row){
-        myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(MISS));
+    	myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(MISS));
     }
     public void showSunk(int col, int row){
         myButtons[row+1][col+1].setIcon(myIconFactory.getIcon(SUNK));
@@ -60,12 +64,16 @@ public class BattlePanel extends JPanel {
     public void clear(int col, int row)
     {
     	if(((row+1) < myRows) && ((col+1) < myCols))
+    	{
+    		//System.err.println("Clearing ("+row+","+col+")");
     		myButtons[row+1][col+1].setIcon(null);
+    	}
     }
     public void clearAll()
     {
-    	for(int i = 0; i < myRows; i++)
-    		for(int j = 0; j < myCols; j++)
+    	//System.err.println("Clearing all");
+    	for(int i = 0; i < myCols; i++)
+    		for(int j = 0; j < myRows; j++)
     			clear(i,j);
     }
     
@@ -111,9 +119,12 @@ public class BattlePanel extends JPanel {
             myButtons[r][0] = new JButton(""+(char)('A'+r-1));
             myButtons[r][0].setEnabled(false);
         }
-        myButtons[0][0] = new JButton("");
+        myButtons[0][0] = new JButton(myScoreString+":0");
         myButtons[0][0].setEnabled(false);
       
+        myButtons[0][0].setFont(new Font(null, Font.ITALIC|Font.BOLD, 16));
+        myButtons[0][0].setToolTipText("Score");
+        
         // now add buttons to this panel to make them visible
         for(int r=0; r < myRows; r++){
             for(int c = 0; c < myCols; c++){
@@ -121,4 +132,10 @@ public class BattlePanel extends JPanel {
             }
         }
     }
+    
+    public void updateScore(int newScore)
+    {
+    	myButtons[0][0].setText(myScoreString+":"+newScore);
+    }
+    
 }

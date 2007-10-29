@@ -1,21 +1,21 @@
 import java.util.*;
+import java.io.Serializable;
 
-
-public class BattleshipModel implements IBattleshipModel{
+public class BattleshipModel implements IBattleshipModel, Serializable{
 	
 	private static final int MaxPlayers = 2;
 	
-	private class PlayerData
+	private class PlayerData implements Serializable
 	{
 		public IBattleshipPlayer myPlayer;
 		public IBoardState myState;
-		public IBattleshipView myView;
 		public int myScore;
 	}
 	
 	private IRuleDeck myRuleDeck;
 	private ArrayList<PlayerData> myPlayers;
-	private IBattleshipPlayer myLoser;
+	private IBattleshipPlayer myLoser = null;
+	private IBattleshipPlayer myForfeiter = null;
 	
 	public int getScore(IBattleshipPlayer p) {
 		for(PlayerData pd : myPlayers)
@@ -25,13 +25,18 @@ public class BattleshipModel implements IBattleshipModel{
 	}
 
 	public boolean isMoveValid(BattleshipMove m) {
+		if(m == null)
+			return false;
 		for(PlayerData pd : myPlayers)
 			if(!pd.myPlayer.equals(m.getPlayer()))
 				return myRuleDeck.isMoveValid(pd.myState, m);
 		return false;
 	}
 
-	public boolean isShipPlacementValid(BattleshipPlacement place, ShipShape shape) {
+	public boolean isShipPlacementValid(BattleshipPlacement place, ShipShape shape)
+	{
+		if(place == null || shape == null)
+			return false;
 		for(PlayerData pd : myPlayers)
 			if(pd.myPlayer.equals(place.getPlayer()))
 				return myRuleDeck.isShipPlacementValid(pd.myState, place, shape);
@@ -42,9 +47,8 @@ public class BattleshipModel implements IBattleshipModel{
 		myLoser = null;
 		for(PlayerData pd : myPlayers)
 		{
+			//System.out.println("newGame() on "+pd.myPlayer);
 			pd.myPlayer.newGame();
-			if(pd.myView != null)
-				pd.myView.newGame();
 			pd.myState.newGame(myRuleDeck.getBoardDimensions());
 		}
 		
@@ -52,24 +56,25 @@ public class BattleshipModel implements IBattleshipModel{
 		int turnNumber = 0;
 		PlayerData currentOffense = myPlayers.get(0);
 		PlayerData currentDefense = myPlayers.get(1);
-		placeShips();
+		if(!placeShips(true))
+			return;
 		while(myLoser == null)
 		{
-			if(currentOffense.myView != null)
-			{
-				currentOffense.myView.setTurn(currentOffense.myPlayer);
-			}
-			if(currentDefense.myView != null)
-			{
-				currentDefense.myView.setTurn(currentOffense.myPlayer);
-			}
+			currentOffense.myPlayer.setTurn(currentOffense.myPlayer);
+			currentDefense.myPlayer.setTurn(currentOffense.myPlayer);
 			
 			BattleshipMove nextMove = currentOffense.myPlayer.getMove();
-			System.err.println("Got ("+nextMove.getCoordinate().myX+","+nextMove.getCoordinate().myY+") from "+nextMove.getPlayer().getName());
+			if(nextMove == null || myForfeiter != null) //Game over
+			{
+				myForfeiter = null;
+				return;
+			}
+			
+			//System.err.println("Got ("+nextMove.getCoordinate().myX+","+nextMove.getCoordinate().myY+") from "+nextMove.getPlayer().getName());
 			
 			CellState pastStateOfCell = currentDefense.myState.getState(nextMove.getCoordinate());
 			
-			System.err.println("Past State: "+pastStateOfCell);
+			//System.err.println("Past State: "+pastStateOfCell);
 			
 			if(pastStateOfCell == CellState.SHIP) //There was a ship there, this is a hit.
 			{
@@ -99,39 +104,101 @@ public class BattleshipModel implements IBattleshipModel{
 			}
 		for(PlayerData pd : myPlayers)
 		{
-			if(pd.myView != null)
-			{
-				pd.myView.gameOver(winner);
-				for(PlayerData pd2 : myPlayers)
-					pd.myView.updateScore(pd2.myPlayer, pd2.myScore);
-			}
-			pd.myPlayer.newGame();
+			pd.myPlayer.gameIsOver(winner);
+			for(PlayerData pd2 : myPlayers)
+				pd.myPlayer.updateScore(pd2.myPlayer, pd2.myScore);
 		}	
+		//System.err.println("Game done.");
 	}
 
-	public void placeShips(){
-		for(PlayerData pd : myPlayers){
+	public boolean placeShips(boolean allPlace){
+		for(int i = ((allPlace) ? 0 : (myPlayers.size() - 1)); i < myPlayers.size(); i++){
+			PlayerData pd = myPlayers.get(i);
 			for (ShipShape ship : myRuleDeck.getShips()){
 				BattleshipPlacement bp = pd.myPlayer.getShipPlacement(ship);
-				if(pd.myView != null)
-					pd.myView.addBattleship(bp);
+				if(bp == null || myForfeiter != null)
+				{
+					myForfeiter = null;
+					return false;
+				}
+				pd.myPlayer.addShip(bp);
 				pd.myState.addShip(bp, ship);
 			}
-			if(pd.myView != null)
-				pd.myView.showMessage("Done Placing Ships", MessageType.INFO);
 		}
-		System.err.println("done placing.");
+		//System.err.println("done placing.");
+		return true;	
 	}
 	
-	public boolean registerPlayer(IBattleshipPlayer p, IBattleshipView v) {
+	public void new1PGame()
+	{
+		myLoser = null;
+		for(PlayerData pd3 : myPlayers)
+		{
+			pd3.myState.newGame(myRuleDeck.getBoardDimensions());
+			pd3.myPlayer.newGame();
+		}
+		
+		//Player 0 always gets to go
+		int turnNumber = 1;
+		PlayerData currentOffense = myPlayers.get(0);
+		PlayerData currentDefense = myPlayers.get(1);
+		if(!placeShips(false))
+			return;
+		while(myLoser == null)
+		{
+			currentOffense.myPlayer.setTurn(currentOffense.myPlayer);
+			currentDefense.myPlayer.setTurn(currentOffense.myPlayer);
+			
+			BattleshipMove nextMove = currentOffense.myPlayer.getMove();
+			if(nextMove == null || myForfeiter != null) //Game over
+			{
+				myForfeiter = null;
+				return;
+			}
+			
+			//System.err.println("Got ("+nextMove.getCoordinate().myX+","+nextMove.getCoordinate().myY+") from "+nextMove.getPlayer().getName());
+			
+			CellState pastStateOfCell = currentDefense.myState.getState(nextMove.getCoordinate());
+			
+			//System.err.println("Past State: "+pastStateOfCell);
+			
+			if(pastStateOfCell == CellState.SHIP) //There was a ship there, this is a hit.
+			{
+				currentOffense.myPlayer.processMove(nextMove, CellState.HIT, null); 
+				currentDefense.myState.processHit(nextMove.getCoordinate());
+				//TODO: roll in ShipShape info
+				currentDefense.myPlayer.processMove(nextMove, CellState.HIT, null);
+			}
+			else if(pastStateOfCell == CellState.NOSHIP)
+			{
+				currentOffense.myPlayer.processMove(nextMove, CellState.MISS, null);
+				currentDefense.myState.processMiss(nextMove.getCoordinate());
+				currentDefense.myPlayer.processMove(nextMove, CellState.MISS, null);
+			}
+			turnNumber++;
+		}
+		IBattleshipPlayer winner = myPlayers.get(0).myPlayer;
+		for(PlayerData pd : myPlayers)
+			if(!(pd.myPlayer == myLoser))
+			{
+				winner = pd.myPlayer;
+				pd.myScore += turnNumber;
+			}
+		for(PlayerData pd : myPlayers)
+		{
+			pd.myPlayer.gameIsOver(winner);
+			for(PlayerData pd2 : myPlayers)
+				pd.myPlayer.updateScore(pd2.myPlayer, pd2.myScore);
+		}	
+		//System.err.println("Game done.");
+	}
+	
+	public boolean registerPlayer(IBattleshipPlayer p) {
 		if (myPlayers.size() < BattleshipModel.MaxPlayers)
 		{
 			PlayerData pd = new PlayerData();
 			pd.myPlayer = p;
 			pd.myPlayer.setModel(this);
-			pd.myView = v;
-			if(pd.myView != null)
-				pd.myView.setModel(this);
 			pd.myState = new BoardState();
 			pd.myState.setModel(this);
 			pd.myScore = 0;
@@ -150,9 +217,10 @@ public class BattleshipModel implements IBattleshipModel{
 		for(PlayerData pd : myPlayers)
 		{
 			pd.myState.newGame(myRuleDeck.getBoardDimensions());
-			if(pd.myView != null)
-				pd.myView.reset(myRuleDeck.getBoardDimensions());
+			pd.myPlayer.reset();
 			pd.myScore = 0;
+			for(PlayerData pd2 : myPlayers)
+				pd.myPlayer.updateScore(pd2.myPlayer, 0);
 		}
 	}
 
@@ -167,11 +235,7 @@ public class BattleshipModel implements IBattleshipModel{
 	public void shipSunk(ShipShape ss, BattleshipPlacement sp) {
 		for(PlayerData pd : myPlayers)
 		{
-				//for (int idx = 0; idx < sp.getPoints().size(); idx++){
-				//	pd.myState.setState(sp.getPoints().get(idx), CellState.SUNK);
-				//}
-				if(pd.myView != null)
-					pd.myView.shipSunk(sp, ss);				
+			pd.myPlayer.shipSunk(sp, ss);				
 		}
 	}
 	
@@ -179,9 +243,30 @@ public class BattleshipModel implements IBattleshipModel{
 	{
 		myLoser = loser;
 	}
-
-	public BoardDimensions getBoardSize() {
-		return myRuleDeck.getBoardDimensions();
+	
+	public void forfeit(IBattleshipPlayer forfeiter)
+	{
+		myForfeiter = forfeiter;
+		IBattleshipPlayer winner = forfeiter; //Will be changed in 2P mode.
+		for(PlayerData pd : myPlayers)
+			if(pd.myPlayer != forfeiter)
+			{
+				winner = pd.myPlayer;
+				break;
+			}
+		for(PlayerData pd : myPlayers)
+		{
+			pd.myPlayer.addMove(null);
+			pd.myPlayer.addShipPlacement(null, null);
+			pd.myPlayer.gameIsOver(winner);
+		}
 	}
 	
+	public BoardDimensions getBoardSize() {
+		return myRuleDeck.getBoardDimensions();
+	}	
+	
+	public int numberOfPlayers() {
+		return myPlayers.size();
+	}
 }

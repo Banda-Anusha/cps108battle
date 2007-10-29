@@ -12,11 +12,10 @@ public interface IBattleshipModel {
 	/**
 	 * This method should be called whenever we want to add a player to the game.
 	 * @param p The player to be added.
-	 * @param v The view with which this player is to be associated (null if none).
 	 * @return Whether or not the player was successfully added.  It will most likely fail if you're in the middle of an existing game or
 	 * if the maximum number of players has already been reached.
 	 */
-	public boolean registerPlayer(IBattleshipPlayer p, IBattleshipView v);
+	public boolean registerPlayer(IBattleshipPlayer p);
 	/**
 	 * This method removes a player from the game.
 	 * @param p The player to be removed.
@@ -55,7 +54,11 @@ public interface IBattleshipModel {
 	public int getScore(IBattleshipPlayer p);
 	
 	public void shipSunk(ShipShape ss, BattleshipPlacement sp);
-	public void gameIsOver(IBattleshipPlayer winner);
-
+	public void gameIsOver(IBattleshipPlayer loser);
+	public void forfeit(IBattleshipPlayer forfeiter);
 	public BoardDimensions getBoardSize();
+	public int numberOfPlayers();
+	public void new1PGame(); //Not currently supported over the network (no real point yet).
+	public void reset();
 }
+

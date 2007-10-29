@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.util.*;
 import java.net.URL;
-
+import java.io.Serializable;
 /**
  * Factoring for loading/retrieving icons. Isolate icon creation from rest of
  * code. Currently loads all files, could use lazy-loading.
@@ -9,7 +9,7 @@ import java.net.URL;
  * @author Owen Astrachan
  */
 
-public class IconFactory {
+public class IconFactory implements Serializable{
     private static final String DIRNAME = "images";
     private String myDirectory;
     private Map<String,ImageIcon> myMap;
@@ -35,7 +35,7 @@ public class IconFactory {
             if (u == null) {
                 break;
             } else {
-                System.out.println("loaded " + name);
+                //System.out.println("loaded " + name);
             }
             // myMap.put(""+count, new ResizableIcon(u));
             ImageIcon icon = new ImageIcon(u);

@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * This class packages up a Player identifier and a list of points corresponding to a proposed placement of a ship on the board.
  * @author Matt Johnson
  *
  */
-public class BattleshipPlacement {
+public class BattleshipPlacement implements Serializable {
 	private IBattleshipPlayer myPlayer;
 	private ArrayList<Coordinate> myPoints;
 	

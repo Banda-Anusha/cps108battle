@@ -1,9 +1,10 @@
+import java.io.Serializable;
 /**
  * This class contains the X (height) and Y (width) dimensions of a rectangular Battleship board.
  * @author Matt Johnson
  *
  */
-public class BoardDimensions {
+public class BoardDimensions implements Serializable{
 	private int myHeight;
 	private int myWidth;
 	
