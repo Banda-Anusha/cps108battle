@@ -32,26 +32,20 @@ public class BattleshipPlayer implements IBattleshipPlayer{
 	}
 	
 	public boolean addMove(BattleshipMove move) {
-		if(!myModel.isMoveValid(move))
-			return false;
-		else
-		{
+		if(move == null || myModel.isMoveValid(move))
 			myMoves.add(move);
-			return true;
-		}
+		return myModel.isMoveValid(move);
 	}
 
 	public boolean addShipPlacement(BattleshipPlacement place, ShipShape shape) {
-		if(!myModel.isShipPlacementValid(place, shape))
-			return false;
-		else
-		{
+		if(place == null || myModel.isShipPlacementValid(place,shape))
 			myPlacements.add(place);
-			return true;
-		}
+		return myModel.isShipPlacementValid(place, shape);
 	}
 
 	public BattleshipMove getMove() {
+		if(!myMoves.isEmpty())
+			return myMoves.remove(0);
 		myView.needMove();
 		return myMoves.remove(0);		
 	}
@@ -61,15 +55,71 @@ public class BattleshipPlayer implements IBattleshipPlayer{
 	}
 
 	public BattleshipPlacement getShipPlacement(ShipShape shape) {
-		return new BattleshipPlacement(this, myView.needPlacement(shape));
+		if(!myPlacements.isEmpty())
+			return myPlacements.remove(0);
+		ArrayList<Coordinate> a = myView.needPlacement(shape);
+		return (a == null) ? null : new BattleshipPlacement(this, a);
 	}
 
 	public void newGame() {
-		// TODO Auto-generated method stub
-		
+		myMoves.clear();
+		myPlacements.clear();
+		if(myView != null)
+			myView.newGame();
 	}
 
 	public void processMove(BattleshipMove m, CellState newState, ShipShape shape) {
 		myView.showMove(m, newState);
+	}
+
+	public void forfeit()
+	{
+		myModel.forfeit(this);
+	}
+	
+	public void gameIsOver(IBattleshipPlayer winner)
+	{
+		if(myView != null)
+			myView.gameOver(winner);
+	}
+	
+	public void setTurn(IBattleshipPlayer itsYourTurn)
+	{
+		if(myView != null)
+			myView.setTurn(itsYourTurn);
+	}
+	
+	public void updateScore(IBattleshipPlayer player, int newScore)
+	{
+		if(myView != null)
+			myView.updateScore(player, newScore);
+	}
+	
+	public void reset()
+	{
+		if(myView != null)
+			myView.reset(myModel.getBoardSize());
+	}
+
+	public boolean isMoveValid(Coordinate move)
+	{
+		return myModel.isMoveValid(new BattleshipMove(this, move));
+	}
+	
+	public boolean isPlacementValid(ArrayList<Coordinate> al, ShipShape ss)
+	{
+		return myModel.isShipPlacementValid(new BattleshipPlacement(this, al), ss);
+	}
+	
+	public void addShip(BattleshipPlacement sp)
+	{
+		if(myView != null)
+			myView.addBattleship(sp);
+	}
+	
+	public void shipSunk(BattleshipPlacement sp, ShipShape ss)
+	{
+		if(myView != null)
+			myView.shipSunk(sp, ss);
 	}
 }

@@ -9,7 +9,7 @@ public class BattleButton extends JButton {
     
     private int myRow, myCol;
     private String myString;
-    private static Dimension ourDimension = new Dimension(30,30);
+    private static Dimension ourDimension = new Dimension(15,20);
     public BattleButton(int row, int col){
         myRow = row;
         myCol = col;

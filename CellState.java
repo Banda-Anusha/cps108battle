@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * This enumerated type encapsulates all the possible states of a cell on a Battleship board from the point of view of a particular Player.
  * From the point of view of one Player, a cell can either be:
@@ -10,7 +12,7 @@
  * @author mrj10
  *
  */
-public enum CellState {
+public enum CellState implements Serializable {
 INVALID,
 HIT,
 MISS,

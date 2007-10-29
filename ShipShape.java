@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 /**
  * This class represents the canonical shape of a ship.  This allows arbitrary shapes to be defined.
  * The constraints for the representation to be canonical are:
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  *
  */
 
-public class ShipShape {
+public class ShipShape implements Serializable{
 	/**
 	 * The name of this class of ship.
 	 */

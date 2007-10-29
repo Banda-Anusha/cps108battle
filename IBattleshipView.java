@@ -67,7 +67,6 @@ public interface IBattleshipView {
 	
 	public void needMove();
 	
-	public void setModel(IBattleshipModel ibm);
 	/**
 	 * This method shows a hit on both players' boards
 	 * @param mySS The shape of the ship that has been hit

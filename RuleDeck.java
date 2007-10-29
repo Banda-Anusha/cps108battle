@@ -4,14 +4,23 @@ import java.util.*;
 public class RuleDeck implements IRuleDeck{
 	
 	
-	private static int Width = 10;
-	private static int Height = 10;
-	private static int MaxPlayers = 2;
+	private int Width = 10;
+	private int Height = 10;
+	private int MaxPlayers = 2;
 	private ArrayList<ShipShape> myShips;
 	
 	public RuleDeck() {
 		myShips = new ArrayList<ShipShape>();
 		initializeShips();
+	}
+	
+	public RuleDeck(int width, int height, int players)
+	{
+		myShips = new ArrayList<ShipShape>();
+		initializeShips();
+		Width = width;
+		Height = height;
+		MaxPlayers = players;
 	}
 	
 	/**
@@ -48,7 +57,7 @@ public class RuleDeck implements IRuleDeck{
 
 	public boolean isMoveValid(IBoardState bs, BattleshipMove m) {
 		CellState cs = bs.getState(m.getCoordinate());
-		System.err.println("isMoveValid State: "+cs+" @ ("+m.getCoordinate().myX+","+m.getCoordinate().myY+")");
+		//System.err.println("isMoveValid State: "+cs+" @ ("+m.getCoordinate().myX+","+m.getCoordinate().myY+")");
 		if(cs == CellState.INVALID)
 			return false;
 		if((cs == CellState.MISS) || (cs == CellState.HIT) || (cs == CellState.SUNK))
@@ -103,10 +112,10 @@ public class RuleDeck implements IRuleDeck{
 		{
 			if(bs.getState(c) != CellState.NOSHIP)
 				return false;
-			System.err.println("("+c.myX+","+c.myY+")");
+			//System.err.println("("+c.myX+","+c.myY+")");
 		}
 		
-		System.err.println("Valid placement for "+sh.getName());
+		//System.err.println("Valid placement for "+sh.getName());
 		
 		return true;
 	}

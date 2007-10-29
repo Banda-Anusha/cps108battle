@@ -1,9 +1,10 @@
+import java.io.Serializable;
 /**
  * This class packages up an X and Y coordinate for a point on a Euclidean Battleship board.
  * @author Matt Johnson
  *
  */
-public class Coordinate {
+public class Coordinate implements Serializable {
 	public int myX; //No reason to make these private or implement accessors, this is strictly a 2-primitive wrapper.
 	public int myY;
 	

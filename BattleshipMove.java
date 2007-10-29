@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /**
  * This class packages up a Player identifier and the proposed coordinate of that Player's next move in a game of Battleship.
  * @author Matt Johnson
  *
  */
-public class BattleshipMove {
+public class BattleshipMove implements Serializable{
 	private IBattleshipPlayer myPlayer;
 	private Coordinate myCoordinate;
 	

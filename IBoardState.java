@@ -1,10 +1,11 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 /**
  * This Interface comprises all the methods that must be implemented for the Model to get information about the Battleship board.
  * @author Matt Johnson
  *
  */
-public interface IBoardState {
+public interface IBoardState extends Serializable{
 	/**
 	 * This method is used to determine if a particular Coordinate is within the boundaries of the board
 	 * @param c The (x,y) coordinate in question

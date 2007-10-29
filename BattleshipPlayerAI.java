@@ -121,17 +121,19 @@ public class BattleshipPlayerAI implements IBattleshipPlayer {
 }
 
 	public void newGame() {
-		myDims = myModel.getBoardSize();
 		myShots = new CellState[myDims.getWidth()][myDims.getHeight()];
 		for(int x = 0; x < myDims.getWidth(); x++){
 			for (int y = 0; y < myDims.getHeight(); y++){
 				myShots[x][y] = CellState.UNKNOWN;
 			}
 		}
+		if(myView != null)
+			myView.newGame();
 	}
 
-	public void processMove(BattleshipMove m, CellState newState, ShipShape shape) {	
-		myView.showMove(m, newState);
+	public void processMove(BattleshipMove m, CellState newState, ShipShape shape) {
+		if(myView != null)
+			myView.showMove(m, newState);
 		myShots[m.getCoordinate().myX][m.getCoordinate().myY] = newState;
 
 		if (newState == CellState.HIT){
@@ -146,6 +148,7 @@ public class BattleshipPlayerAI implements IBattleshipPlayer {
 
 	public void setModel(IBattleshipModel ibm) {
 		myModel = ibm;
+		myDims = myModel.getBoardSize();
 	}
 	
 	public void setView(IBattleshipView ibv){
@@ -156,4 +159,55 @@ public class BattleshipPlayerAI implements IBattleshipPlayer {
 		myName = name;
 	}
 
+	public void forfeit()
+	{
+		myModel.forfeit(this);
+	}
+	
+	public void gameIsOver(IBattleshipPlayer winner)
+	{
+		if(myView != null)
+			myView.gameOver(winner);
+	}
+	
+	public void setTurn(IBattleshipPlayer name)
+	{
+		if(myView != null)
+			myView.setTurn(name);
+	}
+	
+	public void updateScore(IBattleshipPlayer player, int newScore)
+	{
+		if(myView != null)
+			myView.updateScore(player, newScore);
+	}
+	
+	public void reset()
+	{
+		myDims = myModel.getBoardSize();
+		if(myView != null)
+			myView.reset(myDims);
+	}	
+	
+	public boolean isMoveValid(Coordinate move)
+	{
+		return myModel.isMoveValid(new BattleshipMove(this, move));
+	}
+	
+	public boolean isPlacementValid(ArrayList<Coordinate> al, ShipShape ss)
+	{
+		return myModel.isShipPlacementValid(new BattleshipPlacement(this, al), ss);
+	}
+	
+	public void addShip(BattleshipPlacement sp)
+	{
+		if(myView != null)
+			myView.addBattleship(sp);
+	}
+	
+	public void shipSunk(BattleshipPlacement sp, ShipShape ss)
+	{
+		if(myView != null)
+			myView.shipSunk(sp, ss);
+	}
 }
