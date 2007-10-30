@@ -55,8 +55,8 @@ How to run
 
 * BattleMain.java -- Give it 2 command-line arguments: the first one should be "h" for human, and "c" for computer, and likewise for the second argument.
 For example, "java BattleMain c h" will pit an AI Player 1 against a human Player 2.
-
 * BattleServer.java -- 1 command-line argument: the port number to be used.  make sure this process is running before the client processes attempt to connect.
-* BattleMain.java -- doesn't need command-line args, but make sure BattleServer.java is running first.
+* BattleClient.java -- 1 command-line argument: the name of your Player.  If it's not there, you will be prompted for it when the client starts up. Make sure BattleServer.java is running 
+first.
 
 NOTE: For same-machine networked-mode testing, use localhost (i.e. 127.0.0.1:1057). Make sure the port number matches between both client instances and the server.

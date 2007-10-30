@@ -31,19 +31,16 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		}
 	}
 
-	@Override
 	public void forfeit(IBattleshipPlayer forfeiter) {
 		Forfeit nm = new Forfeit(forfeiter);
 		myNMH.send(nm);
 	}
 
-	@Override //Don't need this
 	public void gameIsOver(IBattleshipPlayer loser) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public BoardDimensions getBoardSize() {
 		BoardSizeQuery nm = new BoardSizeQuery(myPlayer);
 		myNMH.send(nm);
@@ -51,7 +48,6 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		return bsq.myDims;
 	}
 
-	@Override
 	public int getScore(IBattleshipPlayer p) {
 		ScoreQuery nm = new ScoreQuery(myPlayer, p);
 		myNMH.send(nm);
@@ -59,7 +55,6 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		return sq.myScore;
 	}
 
-	@Override
 	public boolean isMoveValid(BattleshipMove m) {
 		MoveQuery nm = new MoveQuery(m);
 		myNMH.send(nm);
@@ -67,7 +62,6 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		return mq.myResponse;
 	}
 
-	@Override
 	public boolean isShipPlacementValid(BattleshipPlacement place, ShipShape shape) {
 		PlacementQuery nm = new PlacementQuery(place, shape);
 		myNMH.send(nm);
@@ -75,13 +69,12 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		return pq.myResponse;
 	}
 
-	@Override //Don't need this
+	//Don't need this
 	public void newGame() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public boolean registerPlayer(IBattleshipPlayer p) {
 		Registration r = new Registration(p);
 		myNMH.send(r);
@@ -89,31 +82,30 @@ public class BattleshipClientProxy implements IBattleshipModel {
 		return r2.myResponse;
 	}
 
-	@Override
 	public void removePlayer(IBattleshipPlayer p) {
 		Unregistration nm = new Unregistration(p);
 		myNMH.send(nm);
 	}
 
-	@Override //Not needed for now, rules are set server-side
+	//Not needed for now, rules are set server-side
 	public void setRules(IRuleDeck rules) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	@Override //Not needed
+	//Not needed
 	public void shipSunk(ShipShape ss, BattleshipPlacement sp) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override //Don't need this
+	//Don't need this
 	public int numberOfPlayers() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override //Don't need this
+	//Don't need this
 	public void new1PGame() {
 		// TODO Auto-generated method stub
 		

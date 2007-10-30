@@ -36,7 +36,7 @@ public class BattleServer extends Thread {
             myServerSocket = new ServerSocket(port);
             myQueueServer = new BattleQueue();
             myQueueServer.start();
-            System.err.println("Server Started");
+            System.err.println("Battleship108 Server Started");
         } catch (Exception e) {
             System.err.println("Server Error: " + e);
         }
@@ -61,10 +61,15 @@ public class BattleServer extends Thread {
 
     public static void main(String args[]) {
         BattleServer server = null;
+        if(args.length != 1)
+        {
+        	System.err.println("Error: First and only argument must be the port number for the server");
+        	System.exit(0);
+        }
 		try {
 			server = new BattleServer(Integer.parseInt(args[0]));
 		} catch (NumberFormatException e) {
-			System.err.println("Error: \""+args[0]+"\" is not a valid port number!");
+			System.err.println("Error: \""+args[0]+"\" is not a valid number!");
 			System.exit(0);
 		}
         server.start();

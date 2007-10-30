@@ -21,7 +21,14 @@ public class BattleClient extends Thread{
 	public BattleClient(String name)
 	{
 		myLocalPlayers = new ArrayList<IBattleshipPlayer>();
-		myLocalPlayers.add(new BattleshipPlayer(name));
+		
+		String n = name;
+		while(n == null)
+		{	
+			n = JOptionPane.showInputDialog("Enter Your Player Name");
+		}
+		
+		myLocalPlayers.add(new BattleshipPlayer(n));
 		myMainView = new BattleshipView(myLocalPlayers.get(0), "CPS108 Battleship -- "+name);
 		myLocalPlayers.get(0).setView(myMainView);
 		myLocalModel = new BattleshipModel();
@@ -194,6 +201,7 @@ public class BattleClient extends Thread{
 				ObjectOutputStream o = new ObjectOutputStream(mySocket.getOutputStream());
 				ObjectInputStream i = new ObjectInputStream(mySocket.getInputStream());
 				myProxy = new BattleshipClientProxy(myLocalPlayers.get(0), i, o);
+				//myProxy.start();
 			} catch (IOException e) {
 				System.err.println("Error: Couldn't create Object I/O Streams for Client Proxy");
 				System.exit(0);
@@ -202,6 +210,14 @@ public class BattleClient extends Thread{
 			myCurrentModel = myProxy;
 			myLocalPlayers.get(0).setModel(myCurrentModel);
 			//myLocalPlayers.get(0).reset();
+			while(true)
+			{
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					return;
+				}
+			}
 		}
 		
 		
@@ -210,7 +226,7 @@ public class BattleClient extends Thread{
 	
 	public static void main(String[] args)
 	{
-		BattleClient bc = new BattleClient(args[0]);
+		BattleClient bc = new BattleClient((args.length == 0) ? null : args[0]);
 		bc.start();
 	}	
 }
