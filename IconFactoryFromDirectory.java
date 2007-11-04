@@ -1,4 +1,5 @@
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
@@ -12,27 +13,24 @@ public class IconFactoryFromDirectory implements Serializable{
     private Map<String,ImageIcon> myMap;
     private String mySuffix;
     
-    public IconFactoryFromDirectory(String dirname) {
+    public IconFactoryFromDirectory(String dirname, ArrayList<String> imageNames) {
         myMap = new HashMap<String,ImageIcon>();
-        myDirectory = dirname;
-        File dir = new File(dirname);
-        File[] list = dir.listFiles();
-        for(File f : list){
             
-            String name = f.getAbsolutePath();
-//            URL u = this.getClass().getResource(name);
+        for(String s : imageNames)
+        {
+            URL u = this.getClass().getResource(dirname+"/"+s);
 //            if (u == null) {
 //                System.out.println("failed for "+name);
 //                continue;
 //            } else {
 //                System.out.println("loaded " + name);
 //            }
-            
-            ImageIcon icon = new ImageIcon(name);
-            if (icon != null){
+           ;
+            ImageIcon icon = new ImageIcon(u);
+            //if (icon != null){
                 //System.out.println("loaded "+f.getName());
-            }
-            myMap.put(f.getName(), new ResizableIcon(icon));
+            //}
+            myMap.put(s, new ResizableIcon(icon));
         }
     }
 

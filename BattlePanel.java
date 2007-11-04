@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+
 import javax.swing.border.*;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,7 +33,16 @@ public class BattlePanel extends JPanel {
         super(new GridLayout(dim.getHeight()+1,dim.getWidth()+1,0,0));
         myRows = dim.getHeight()+1;
         myCols = dim.getWidth()+1;
-        myIconFactory =  new IconFactoryFromDirectory("images"); //"/Users/ola/Desktop/courses/108/workspace/GUIs/src/images");
+        
+        ArrayList<String> imageNames = new ArrayList<String>();
+        imageNames.add(SUNK);
+        imageNames.add(WATER);
+        imageNames.add(SHIP);
+        imageNames.add(HIT);
+        imageNames.add(MISS);
+        imageNames.add(REDSQUARE);
+        
+        myIconFactory =  new IconFactoryFromDirectory("images", imageNames); //"/Users/ola/Desktop/courses/108/workspace/GUIs/src/images");
         myScoreString = scoreString;
         makeButtons();
     }
