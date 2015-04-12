@@ -1,0 +1,1 @@
+A Battleship game written in Java.  1-Player, 2-Player, and Networked modes.
